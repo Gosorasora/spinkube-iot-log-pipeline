@@ -1,0 +1,8 @@
+# IoT 로그 시뮬레이터 의존성
+
+# HTTP 요청
+requests>=2.31.0
+aiohttp>=3.9.0
+
+# AWS Kinesis (AWS 테스트 시 필요)
+boto3>=1.34.0
