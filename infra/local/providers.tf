@@ -1,5 +1,4 @@
-# 로컬 개발 환경용 Provider 설정
-# Minikube 클러스터를 대상으로 합니다.
+# k3d 로컬 개발 환경용 Provider 설정
 
 terraform {
   required_version = ">= 1.0.0"
@@ -16,13 +15,11 @@ terraform {
   }
 }
 
-# Kubernetes Provider - Minikube 연결
 provider "kubernetes" {
   config_path    = var.kubeconfig_path
   config_context = var.kubeconfig_context
 }
 
-# Helm Provider - Minikube 연결
 provider "helm" {
   kubernetes {
     config_path    = var.kubeconfig_path
@@ -37,7 +34,7 @@ variable "kubeconfig_path" {
 }
 
 variable "kubeconfig_context" {
-  description = "사용할 kubeconfig 컨텍스트 (minikube)"
+  description = "사용할 kubeconfig 컨텍스트"
   type        = string
-  default     = "minikube"
+  default     = "k3d-spinkube"
 }
