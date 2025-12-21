@@ -1,109 +1,119 @@
-# KEDA ScaledObject - 이벤트 기반 오토스케일링 설정
+# KEDA ScaledObject - Azure Event Hubs 기반 오토스케일링
 #
 # 두 가지 모드 지원:
-#   1. 로컬 테스트: HTTP 요청 기반 스케일링 (Prometheus 메트릭)
-#   2. AWS 운영: Kinesis 스트림 Lag 기반 스케일링
+#   1. 로컬 테스트: Prometheus 메트릭 기반
+#   2. Azure 운영: Event Hubs Lag 기반
 #
 # 배포:
 #   kubectl apply -f keda-scaler.yaml
 
 ---
 # ============================================
-# 모드 1: 로컬 테스트용 (HTTP 메트릭 기반)
+# 모드 1: 로컬 테스트용 (Prometheus 기반)
 # ============================================
 apiVersion: keda.sh/v1alpha1
 kind: ScaledObject
 metadata:
   name: log-analyzer-scaler-local
-  namespace: spinkube-system
   labels:
     app: log-analyzer
     mode: local
 spec:
   scaleTargetRef:
-    name: log-analyzer  # SpinApp 이름
+    name: log-analyzer
     kind: SpinApp
-    apiVersion: core.spinoperator.dev/v1alpha1
-  
-  # 스케일링 범위
+    apiVersion: core.spinkube.dev/v1alpha1
+
   minReplicaCount: 1
   maxReplicaCount: 10
-  
-  # 쿨다운 설정 (초)
   cooldownPeriod: 30
-  
-  # 폴링 간격 (초)
   pollingInterval: 5
-  
+
   triggers:
-    # Prometheus 메트릭 기반 스케일링
     - type: prometheus
       metadata:
         serverAddress: http://prometheus-kube-prometheus-prometheus.monitoring:9090
         metricName: http_requests_total
         query: |
           sum(rate(http_requests_total{service="log-analyzer-svc"}[1m]))
-        threshold: "100"  # 초당 100 요청 이상 시 스케일 아웃
+        threshold: "100"
 
 ---
 # ============================================
-# 모드 2: AWS 운영용 (Kinesis 기반)
+# 모드 2: Azure 운영용 (Event Hubs 기반)
 # ============================================
-# 아래 설정은 AWS 배포 시 활성화하세요.
-# 
+# 아래 설정은 Azure 배포 시 활성화하세요.
+#
 # apiVersion: keda.sh/v1alpha1
 # kind: ScaledObject
 # metadata:
-#   name: log-analyzer-scaler-kinesis
-#   namespace: spinkube-system
+#   name: log-analyzer-scaler-eventhub
 #   labels:
 #     app: log-analyzer
-#     mode: aws
+#     mode: azure
 # spec:
 #   scaleTargetRef:
 #     name: log-analyzer
 #     kind: SpinApp
-#     apiVersion: core.spinoperator.dev/v1alpha1
-#   
+#     apiVersion: core.spinkube.dev/v1alpha1
+#
 #   minReplicaCount: 1
 #   maxReplicaCount: 50
 #   cooldownPeriod: 60
 #   pollingInterval: 10
-#   
+#
 #   triggers:
-#     - type: aws-kinesis-stream
+#     - type: azure-eventhub
 #       metadata:
-#         streamName: iot-log-stream
-#         awsRegion: ap-northeast-2
-#         shardCount: "2"
-#         # 샤드당 처리 대기 레코드 수 임계값
-#         activationTargetValue: "100"
-#         targetValue: "500"
+#         # Event Hub 설정
+#         eventHubNamespace: spinkube-iot-dev-ehns
+#         eventHubName: iot-log-stream
+#         consumerGroup: keda-consumer
+#         # 파티션당 처리 대기 메시지 임계값
+#         unprocessedEventThreshold: "64"
+#         # Blob Storage (체크포인트용)
+#         blobContainer: eventhub-checkpoints
 #       authenticationRef:
-#         name: keda-aws-credentials
+#         name: keda-eventhub-auth
 
 ---
 # ============================================
-# AWS 인증 설정 (Kinesis 사용 시 필요)
+# Azure Event Hubs 인증 설정
 # ============================================
 # apiVersion: keda.sh/v1alpha1
 # kind: TriggerAuthentication
 # metadata:
-#   name: keda-aws-credentials
-#   namespace: spinkube-system
+#   name: keda-eventhub-auth
 # spec:
-#   podIdentity:
-#     provider: aws-eks  # IRSA 사용
+#   secretTargetRef:
+#     - parameter: connection
+#       name: eventhub-secrets
+#       key: connection-string
+#     - parameter: storageConnection
+#       name: eventhub-secrets
+#       key: storage-connection-string
 
 ---
 # ============================================
-# 모드 3: 간단한 Cron 기반 스케일링 (테스트용)
+# Event Hubs 연결 정보 Secret
+# ============================================
+# apiVersion: v1
+# kind: Secret
+# metadata:
+#   name: eventhub-secrets
+# type: Opaque
+# stringData:
+#   connection-string: "Endpoint=sb://spinkube-iot-dev-ehns.servicebus.windows.net/;SharedAccessKeyName=keda-auth;SharedAccessKey=xxx;EntityPath=iot-log-stream"
+#   storage-connection-string: "DefaultEndpointsProtocol=https;AccountName=xxx;AccountKey=xxx;EndpointSuffix=core.windows.net"
+
+---
+# ============================================
+# 모드 3: Cron 기반 스케일링 (테스트용)
 # ============================================
 apiVersion: keda.sh/v1alpha1
 kind: ScaledObject
 metadata:
   name: log-analyzer-scaler-cron
-  namespace: spinkube-system
   labels:
     app: log-analyzer
     mode: cron-test
@@ -111,13 +121,12 @@ spec:
   scaleTargetRef:
     name: log-analyzer
     kind: SpinApp
-    apiVersion: core.spinoperator.dev/v1alpha1
-  
+    apiVersion: core.spinkube.dev/v1alpha1
+
   minReplicaCount: 0
   maxReplicaCount: 5
-  
+
   triggers:
-    # 매 분 0~30초: 5개 파드, 30~60초: 1개 파드 (테스트용)
     - type: cron
       metadata:
         timezone: Asia/Seoul

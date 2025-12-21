@@ -11,8 +11,8 @@ WebAssembly(SpinKube)와 KEDA를 활용한 이벤트 기반 초고속 IoT 로그
 - **Language**: Python (componentize-py)
 - **Autoscaling**: KEDA (Kubernetes Event-driven Autoscaling)
 - **Monitoring**: Prometheus + Grafana
-- **Infrastructure**: Terraform, k3d
-- **Message Queue**: AWS Kinesis (운영 환경)
+- **Infrastructure**: Terraform, k3d (로컬), Azure AKS (운영)
+- **Message Queue**: Azure Event Hubs (운영 환경)
 
 ## 📁 프로젝트 구조
 
@@ -24,7 +24,7 @@ Spinkube/
 │   └── requirements.txt    # Python 의존성
 ├── infra/                  # Terraform IaC
 │   ├── local/              # k3d 환경
-│   └── aws/                # EKS 환경 (예정)
+│   └── azure/              # Azure AKS 환경
 ├── k8s/                    # Kubernetes 매니페스트
 │   ├── spin-app.yaml       # SpinApp CRD
 │   └── keda-scaler.yaml    # KEDA ScaledObject
