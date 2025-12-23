@@ -58,29 +58,30 @@ async def send_requests(url, count, concurrency):
     semaphore = asyncio.Semaphore(concurrency)
     results = {"success": 0, "failed": 0, "times": []}
     
-    async def send_one():
+    async def send_one(session):
         async with semaphore:
             start = time.perf_counter()
             try:
-                async with aiohttp.ClientSession() as session:
-                    async with session.post(url, json=generate_log(), timeout=aiohttp.ClientTimeout(total=5)) as resp:
-                        await resp.text()
-                        elapsed = (time.perf_counter() - start) * 1000
-                        if resp.status == 200:
-                            results["success"] += 1
-                        else:
-                            results["failed"] += 1
-                        results["times"].append(elapsed)
+                async with session.post(url, json=generate_log(), timeout=aiohttp.ClientTimeout(total=5)) as resp:
+                    await resp.text()
+                    elapsed = (time.perf_counter() - start) * 1000
+                    if resp.status == 200:
+                        results["success"] += 1
+                    else:
+                        results["failed"] += 1
+                    results["times"].append(elapsed)
             except:
                 results["failed"] += 1
     
-    tasks = [send_one() for _ in range(count)]
-    await asyncio.gather(*tasks)
+    # 세션을 한 번만 생성하고 재사용
+    async with aiohttp.ClientSession() as session:
+        tasks = [send_one(session) for _ in range(count)]
+        await asyncio.gather(*tasks)
     return results
 
 
 async def main():
-    url = "http://localhost:3001/analyze"
+    url = "http://localhost:8081/analyze"
     
     print("=" * 70)
     print("SpinKube 부하 테스트 + 리소스 모니터링")
@@ -94,10 +95,9 @@ async def main():
     
     # 테스트 단계
     stages = [
-        {"name": "저부하", "requests": 100, "concurrency": 5},
-        {"name": "중부하", "requests": 500, "concurrency": 20},
-        {"name": "고부하", "requests": 1000, "concurrency": 50},
-        {"name": "극한부하", "requests": 2000, "concurrency": 100},
+        {"name": "저부하", "requests": 500, "concurrency": 50},
+        {"name": "중부하", "requests": 5000, "concurrency": 500},
+        {"name": "고부하", "requests": 15000, "concurrency": 1000},
     ]
     
     all_results = []
@@ -147,11 +147,6 @@ async def main():
         print(f"{r['stage']:<12} {r['avg_ms']:<12.2f} {r['p99_ms']:<12.2f} {r['throughput']:<15.1f} {r['success_rate']:<10.1f}%")
     
     print("\n" + "=" * 70)
-    print("SpinKube 성능 특징:")
-    print("  - 콜드 스타트: ~10-20ms (컨테이너 대비 100배 빠름)")
-    print("  - 메모리 사용량: ~60-100MB (컨테이너 대비 70-90% 절감)")
-    print("  - 일관된 응답 시간: 부하 증가에도 안정적")
-    print("=" * 70)
 
 
 if __name__ == "__main__":

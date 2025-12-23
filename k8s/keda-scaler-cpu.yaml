@@ -1,0 +1,20 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: log-analyzer-scaler
+spec:
+  scaleTargetRef:
+    name: log-analyzer
+    kind: SpinApp
+    apiVersion: core.spinkube.dev/v1alpha1
+  
+  minReplicaCount: 2
+  maxReplicaCount: 20
+  cooldownPeriod: 30
+  pollingInterval: 5
+  
+  triggers:
+    - type: cpu
+      metricType: Utilization
+      metadata:
+        value: "50"
