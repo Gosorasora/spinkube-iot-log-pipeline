@@ -8,10 +8,10 @@ spec:
     kind: SpinApp
     apiVersion: core.spinkube.dev/v1alpha1
   
-  minReplicaCount: 2
-  maxReplicaCount: 20
-  cooldownPeriod: 30
-  pollingInterval: 5
+  minReplicaCount: 1
+  maxReplicaCount: 100
+  cooldownPeriod: 10
+  pollingInterval: 2
   
   triggers:
     - type: cpu

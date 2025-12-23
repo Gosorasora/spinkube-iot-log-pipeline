@@ -5,7 +5,7 @@ metadata:
 spec:
   # OCI 레지스트리 이미지 (ttl.sh는 임시, 운영 시 GHCR 사용)
   image: "ttl.sh/spinkube-py-v3:2h"
-  replicas: 10
+  replicas: 1
   executor: containerd-shim-spin
 ---
 apiVersion: v1
