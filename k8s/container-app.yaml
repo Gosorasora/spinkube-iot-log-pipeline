@@ -25,8 +25,8 @@ spec:
           protocol: TCP
         resources:
           requests:
-            memory: "64Mi"
-            cpu: "50m"
+            memory: "128Mi"  # Container 최소 권장 사양
+            cpu: "100m"
           limits:
             memory: "256Mi"
             cpu: "500m"
