@@ -1,6 +1,7 @@
 # SpinKube IoT Log Analyzer
 
 WebAssembly(SpinKube)와 KEDA를 활용한 이벤트 기반 초고속 IoT 로그 처리 시스템
+> **[📘 시스템 아키텍처 및 벤치마크 결과 보기](./ARCHITECTURE.md)**
 
 ## 🎯 프로젝트 개요
 

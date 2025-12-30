@@ -1,0 +1,18 @@
+spin_manifest_version = 2
+
+[application]
+name = "app-rust"
+version = "0.1.0"
+authors = ["DongHyeon Ko <hanser0204@naver.com>"]
+description = "High-performance Rust implementation of the Log Analyzer"
+
+[[trigger.http]]
+route = "/..."
+component = "app-rust"
+
+[component.app-rust]
+source = "target/wasm32-wasip1/release/app_rust.wasm"
+allowed_outbound_hosts = []
+[component.app-rust.build]
+command = "cargo build --target wasm32-wasip1 --release"
+watch = ["src/**/*.rs", "Cargo.toml"]

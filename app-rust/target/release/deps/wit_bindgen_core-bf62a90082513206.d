@@ -1,0 +1,10 @@
+/Users/kosora/Documents/03_Projects/Spinkube/Spinkube/app-rust/target/release/deps/wit_bindgen_core-bf62a90082513206.d: /Users/kosora/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wit-bindgen-core-0.16.0/src/lib.rs /Users/kosora/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wit-bindgen-core-0.16.0/src/abi.rs /Users/kosora/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wit-bindgen-core-0.16.0/src/ns.rs /Users/kosora/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wit-bindgen-core-0.16.0/src/source.rs
+
+/Users/kosora/Documents/03_Projects/Spinkube/Spinkube/app-rust/target/release/deps/libwit_bindgen_core-bf62a90082513206.rlib: /Users/kosora/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wit-bindgen-core-0.16.0/src/lib.rs /Users/kosora/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wit-bindgen-core-0.16.0/src/abi.rs /Users/kosora/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wit-bindgen-core-0.16.0/src/ns.rs /Users/kosora/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wit-bindgen-core-0.16.0/src/source.rs
+
+/Users/kosora/Documents/03_Projects/Spinkube/Spinkube/app-rust/target/release/deps/libwit_bindgen_core-bf62a90082513206.rmeta: /Users/kosora/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wit-bindgen-core-0.16.0/src/lib.rs /Users/kosora/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wit-bindgen-core-0.16.0/src/abi.rs /Users/kosora/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wit-bindgen-core-0.16.0/src/ns.rs /Users/kosora/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wit-bindgen-core-0.16.0/src/source.rs
+
+/Users/kosora/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wit-bindgen-core-0.16.0/src/lib.rs:
+/Users/kosora/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wit-bindgen-core-0.16.0/src/abi.rs:
+/Users/kosora/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wit-bindgen-core-0.16.0/src/ns.rs:
+/Users/kosora/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wit-bindgen-core-0.16.0/src/source.rs:
